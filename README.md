@@ -16,7 +16,7 @@ If your README is long, add a table of contents to make it easy for users to fin
 ## Installation
 
 you need a termial and you need to be type npm start which will make the poert start listening and then once you open insomia and type the coorect routes and can start doing Crud.
-
+https://youtu.be/RKyA_EZXRhk
 ## Usage
 
 
