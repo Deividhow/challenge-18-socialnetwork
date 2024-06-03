@@ -1,5 +1,6 @@
-const { Thought, User } = require('../models');
-
+// const { Thought, User } = require('../models');
+const { Thought } = require('../models');
+const User = require('../models/User');
 module.exports = {
   async getThoughts(req, res) {
     try {
@@ -23,31 +24,56 @@ module.exports = {
     }
   },
   // create a new video
+  // async createThought(req, res) {
+  //   try {
+  //     const thought = await Thought.create(req.body);
+  //     const user = await User.findOneAndUpdate(
+  //       { _id: req.body.userId },
+  //       { $addToSet: { thought: thought._id } },
+  //       { new: true }
+  //     );
+  //     //!undefined
+  //     if (!user) {
+  //       return res.status(404).json({
+  //         message: 'Thought created, but found no user with that ID',
+  //       });
+  //     }
+
+  //     res.json('Created the thought 🎉');
+  //   } catch (err) {
+  //     console.log(err);
+  //     res.status(500).json(err);
+  //   }
+  // },
+
+  
   async createThought(req, res) {
     try {
-      const thought = await Thought.create(req.body);
-      const user = await User.findOneAndUpdate(
-        { _id: req.body.userId },
-        { $addToSet: { thought: thought._id } },
-        { new: true }
-      );
-      //!undefined
+      // Check if the user exists
+      const user = await User.findOne({ username: req.body.username });
+
       if (!user) {
-        return res.status(404).json({
-          message: 'Thought created, but found no user with that ID',
-        });
+        return res.status(404).json({ message: 'User not found with that username' });
       }
 
-      res.json('Created the thought 🎉');
+      // Create the thought
+      const newThought = await Thought.create(req.body);
+
+      // Associate the thought with the user
+      user.thoughts.push(newThought._id);
+      await user.save();
+
+      res.json({ message: 'Thought successfully created and associated with user', newThought });
     } catch (err) {
-      console.log(err);
       res.status(500).json(err);
     }
   },
+
+
   async updateThought(req, res) {
     try {
       const thought = await Thought.findOneAndUpdate(
-        { _id: req.params.videoId },
+        { _id: req.params.thoughtId },
         { $set: req.body },
         { runValidators: true, new: true }
       );
@@ -118,7 +144,7 @@ module.exports = {
         return res.status(404).json({ message: 'No video with this id!' });
       }
 
-      res.json(video);
+      res.json(thought);
     } catch (err) {
       res.status(500).json(err);
     }

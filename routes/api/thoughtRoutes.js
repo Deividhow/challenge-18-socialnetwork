@@ -9,19 +9,19 @@ const {
   removeThoughtReaction,
 } = require('../../controllers/thoughtController');
 
-// /api/videos
-//http://localhost:3001/api/videos
+// /api/thoughts
+//http://localhost:3001/api/thoughts
 router.route('/').get(getThoughts).post(createThought);
 
-// /api/videos/:videoId
+// /api/thoughts/:thoughtId
 router
-  .route('/:thoughtoId')
+  .route('/:thoughId')
   .get(getSingleThought)
   .put(updateThought)
   .delete(deleteThought);
 
-// /api/videos/:videoId/responses
-//http://localhost:3001/api/videos/
+// /api/thoughts/:userId/reaction
+//http://localhost:3001/api/thoughts/
 router.route('/:thoughtId/reactions').post(addThoughtReaction);
 
 // /api/videos/:videoId/responses/:responseId
